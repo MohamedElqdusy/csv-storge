@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  redis:
+    image: "redis:alpine"
+    ports:
+     - "6379:6379"
+    restart: "always"
+
+  app:
+    build: "."
+    ports: 
+      - "1321:1321"
+    environment:
+      REDIS_ADRESS: "redis"
+      REDIS_PORT: "6379"
+      REDIS_DATABASE: "0"
+      REDIS_PASSWORD: ""
+    restart: "always"
+    depends_on:
+      - redis
+ 

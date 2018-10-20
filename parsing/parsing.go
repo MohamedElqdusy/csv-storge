@@ -36,22 +36,21 @@ func readFile(filePath string, c chan string) {
 }
 
 func splitLineThenStore(c chan string) {
-	var s string
-	for {
-		s = <-c
+	for s := range c {
+
+		var promotion models.Promotion
+
+		columns := strings.Split(s, ",")
+		promotion.Id = columns[0]
+
+		var err error
+		promotion.Price, err = strconv.ParseFloat(columns[1], 64)
+		utils.HandleError(err)
+
+		promotion.ExpirationDate = columns[2]
+		ctx := context.Background()
+		db.CreatePromotion(ctx, promotion)
 	}
-	var promotion models.Promotion
-
-	columns := strings.Split(s, ",")
-	promotion.Id = columns[0]
-
-	var err error
-	promotion.Price, err = strconv.ParseFloat(columns[1], 64)
-	utils.HandleError(err)
-
-	promotion.ExpirationDate = columns[2]
-	ctx := context.Background()
-	db.CreatePromotion(ctx, promotion)
 }
 
 func earseStore() {

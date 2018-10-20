@@ -49,9 +49,10 @@ func (c RedisRepository) FindPromotionById(ctx context.Context, id string) (mode
 
 	reply, err := c.conn.Get("promotions:" + id).Result()
 	utils.HandleError(err)
-	err = json.Unmarshal([]byte(reply), &promotion)
-	utils.HandleError(err)
-
+	if err == nil {
+		err = json.Unmarshal([]byte(reply), &promotion)
+		utils.HandleError(err)
+	}
 	return promotion, nil
 }
 
